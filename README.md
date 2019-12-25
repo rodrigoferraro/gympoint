@@ -19,7 +19,7 @@
 
 Este trabalho é resultado de um desafio proposto no curso GoStack, da Rocketseat. Abaixo tem melhores detalhes, conforme copiado do repositório da Rocket.
 
-Iniciei o curso dia 20 de dezembro, e sei que talvez agora não fosse o melhor momento para se estar aqui, mas, o legal está sendo que sempre que me sobra meia hora, estou vendo alguma coisa sobre o curso. Galera da Rocket de parabéns, pois a cada mínimo conhecimento repassado, já ocorre a prática, e isso faz com que a gente sempre fique animado... 
+Iniciei o curso dia 15 de dezembro, e sei que talvez agora não fosse o melhor momento para se estar aqui, mas, o legal está sendo que sempre que me sobra meia hora, estou vendo alguma coisa sobre o curso. Galera da Rocket de parabéns, pois a cada mínimo conhecimento repassado, já ocorre a prática, e isso faz com que a gente sempre fique animado... 
 
 Então espero conseguir desenvolver bem as habilidades trabalhadas no curso, e realizar um bom trabalho prático, como uma prova do bom aproveitamento do conteúdo.
 
