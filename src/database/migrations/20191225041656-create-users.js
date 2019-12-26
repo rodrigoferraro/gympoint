@@ -20,10 +20,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      provider: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -35,7 +31,7 @@ module.exports = {
     });
   },
 
-  down: (queryInterface, Sequelize) => {
+  down: queryInterface => {
     return queryInterface.dropTable('users');
   },
 };
