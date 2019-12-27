@@ -21,6 +21,35 @@ class StudentController {
       altura,
     });
   }
+
+  async update(req, res) {
+    const student = await Student.findByPk(req.params.id);
+
+    const email = req.body.email || student.email;
+
+    if (email !== student.email) {
+      const newEmailExists = await Student.findOne({
+        where: { email },
+      });
+
+      if (newEmailExists) {
+        return res.status(400).json({
+          error: `Email already assigned to ${newEmailExists.nome}`,
+        });
+      }
+    }
+
+    const { id, nome, idade, peso, altura } = await student.update(req.body);
+
+    return res.json({
+      id,
+      nome,
+      email,
+      idade,
+      peso,
+      altura,
+    });
+  }
 }
 
 export default new StudentController();
