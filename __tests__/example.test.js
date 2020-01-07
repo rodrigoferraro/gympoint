@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // test('se eu chamar a rota/ authenticate com um usuário válido, ela deve retornar um token JWT', () => {});
 
 function soma(a, b) {
