@@ -4,17 +4,15 @@ class Option extends Model {
   static init(sequelize) {
     super.init(
       {
-        student_id: Sequelize.INTEGER,
+        title: Sequelize.STRING,
+        duration: Sequelize.INTEGER,
+        price: Sequelize.DECIMAL(6, 2),
       },
       {
         sequelize,
       }
     );
     return this;
-  }
-
-  static associate(models) {
-    this.belongsTo(models.Student, { foreignKey: 'student_id', as: 'student' });
   }
 }
 

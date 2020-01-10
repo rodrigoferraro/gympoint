@@ -6,6 +6,11 @@ class Membership extends Model {
       {
         student_id: Sequelize.INTEGER,
         option_id: Sequelize.INTEGER,
+        start_date: Sequelize.DATE,
+        end_date: Sequelize.DATE,
+        price: Sequelize.DECIMAL(6, 2),
+        created_at: Sequelize.DATE,
+        updated_at: Sequelize.DATE,
       },
       {
         sequelize,
