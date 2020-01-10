@@ -62,6 +62,7 @@ class CheckinController {
     const thisCheckin = await Checkin.create({ student_id });
 
     return res.json({
+      message: `Welcome, ${studentExists.nome}`,
       thisCheckin,
       lastSevenDaysCheckins: lastSevenDaysCheckins.rows,
     });
