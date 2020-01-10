@@ -1,7 +1,8 @@
 // eslint-disable-next-line import/no-unresolved
+
 module.exports = {
-  up: QueryInterface => {
-    return QueryInterface.bulkInsert(
+  up: queryInterface => {
+    return queryInterface.bulkInsert(
       'options',
       [
         {
@@ -30,5 +31,7 @@ module.exports = {
     );
   },
 
-  down: () => {},
+  down: queryInterface => {
+    return queryInterface.bulkDelete('options', null, {});
+  },
 };
