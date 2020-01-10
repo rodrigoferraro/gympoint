@@ -1,4 +1,6 @@
 import * as Yup from 'yup';
+import { startOfDay, subDays } from 'date-fns';
+import { Op } from 'sequelize';
 
 import Checkin from '../models/Checkin';
 import Student from '../models/Student';
@@ -37,16 +39,31 @@ class CheckinController {
       return res.status(400).json({ error: 'Student not found.' });
     }
 
-    await Checkin.create({ student_id });
+    const today = startOfDay(new Date());
 
-    const lastFiveCheckins = await Checkin.findAll({
-      where: { student_id },
-      limit: 5,
+    const lastSevenDaysCheckins = await Checkin.findAndCountAll({
+      where: {
+        student_id,
+        created_at: {
+          [Op.gt]: subDays(today, 7),
+        },
+      },
       order: [['created_at', 'DESC']],
     });
 
+    if (lastSevenDaysCheckins.count >= 5) {
+      return res.json({
+        message: `You can have max 5 checkins within last 7 days`,
+        checkinList: lastSevenDaysCheckins.rows,
+        checkinCount: lastSevenDaysCheckins.count,
+      });
+    }
+
+    const thisCheckin = await Checkin.create({ student_id });
+
     return res.json({
-      lastFiveCheckins,
+      thisCheckin,
+      lastSevenDaysCheckins: lastSevenDaysCheckins.rows,
     });
   }
 }
