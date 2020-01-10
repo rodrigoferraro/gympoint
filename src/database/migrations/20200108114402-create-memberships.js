@@ -13,11 +13,17 @@ module.exports = {
       student_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: 'students', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       // what option he'd choosen
       option_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: 'options', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       // when membership starts
       // - student can chose the best appropriated date for him
