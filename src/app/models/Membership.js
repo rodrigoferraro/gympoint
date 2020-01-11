@@ -4,11 +4,11 @@ class Membership extends Model {
   static init(sequelize) {
     super.init(
       {
-        student_id: Sequelize.INTEGER,
-        option_id: Sequelize.INTEGER,
-        start_date: Sequelize.DATE,
-        end_date: Sequelize.DATE,
-        price: Sequelize.DECIMAL(6, 2),
+        student_id: Sequelize.INTEGER, // referência ao aluno
+        option_id: Sequelize.INTEGER, // referência ao plano que escolheu
+        start_date: Sequelize.DATE, // data de início da matrícula
+        end_date: Sequelize.DATE, // data de término da matrícula
+        price: Sequelize.DECIMAL(6, 2), // preço total calculado no momento da matrícula
         created_at: Sequelize.DATE,
         updated_at: Sequelize.DATE,
       },

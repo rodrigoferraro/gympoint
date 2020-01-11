@@ -39,7 +39,7 @@ module.exports = {
       },
       // calculated total price in accordance of choosen option
       price: {
-        type: Sequelize.DATE,
+        type: Sequelize.DECIMAL(6, 2),
         allowNull: false,
       },
       created_at: {
