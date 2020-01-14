@@ -68,7 +68,62 @@ class MembershipController {
   Atualiza uma associação entre Aluno e Plano
   * */
   async update(req, res) {
-    return res.json({ message: 'Membership Update' });
+    const schema = Yup.object().shape({
+      student_id: Yup.string().required(),
+      option_id: Yup.string().required(),
+      start_date: Yup.string().required(),
+    });
+
+    const data = {
+      student_id: req.params.student_id,
+      option_id: req.params.option_id,
+      start_date: req.body.start_date,
+    };
+
+    if (!(await schema.isValid(data))) {
+      return res
+        .status(400)
+        .json({ error: 'Validation fails. All fields required.' });
+    }
+
+    const student_id = parseInt(req.params.student_id, 10);
+    const option_id = parseInt(req.params.option_id, 10);
+    const new_start_date = startOfDay(parseISO(req.body.start_date));
+
+    let membership = await Membership.findOne({
+      where: { student_id, option_id },
+    });
+
+    if (!membership) {
+      return res.status(401).json({
+        error: `Membership for student ${student_id} with option ${option_id} was not found`,
+      });
+    }
+
+    if (membership.start_date === new_start_date) {
+      return res
+        .status(401)
+        .json({ message: 'New date to start is equal actual date' });
+    }
+
+    const option = await Option.findByPk(option_id);
+
+    const new_end_date = addMonths(new_start_date, option.duration);
+
+    membership = await Membership.update(
+      {
+        start_date: new_start_date,
+        end_date: new_end_date,
+      },
+      { where: { student_id, option_id } }
+    )
+      .then(updated => {
+        return res.json({ updated });
+      })
+      .catch(error => {
+        console.log(error);
+        return res.json({ error });
+      });
   }
 
   /*

@@ -24,12 +24,19 @@ routes.get('/options', OptionController.index);
 routes.put('/options/:id', OptionController.update);
 routes.delete('/options/:id', OptionController.delete);
 
+/**
+ Membership
+ * 
+ */
+routes.get('/students/:student_id/membership', MembershipController.index);
 routes.post(
   '/students/:student_id/options/:option_id/membership',
   MembershipController.store
 );
-routes.get('/students/:student_id/membership', MembershipController.index);
-routes.put('/students/:student_id/membership', MembershipController.update);
+routes.put(
+  '/students/:student_id/options/:option_id/membership',
+  MembershipController.update
+);
 routes.delete('/students/:student_id/membership', MembershipController.delete);
 
 export default routes;
