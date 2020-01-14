@@ -9,8 +9,6 @@ class Membership extends Model {
         start_date: Sequelize.DATE, // data de início da matrícula
         end_date: Sequelize.DATE, // data de término da matrícula
         price: Sequelize.DECIMAL(6, 2), // preço total calculado no momento da matrícula
-        created_at: Sequelize.DATE,
-        updated_at: Sequelize.DATE,
       },
       {
         sequelize,
