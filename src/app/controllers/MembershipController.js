@@ -23,9 +23,14 @@ class MembershipController {
       filter.option_id = option_id;
     }
 
+    const { page = 1, recs = 20 } = req.query;
+
     const memberships = await Membership.findAll({
       attributes: ['start_date', 'end_date', 'price'],
       where: filter,
+      order: ['nome'],
+      limit: recs,
+      offset: page > 0 ? (page - 1) * recs : 0,
       include: [
         {
           model: Student,
