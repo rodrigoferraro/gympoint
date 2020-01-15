@@ -18,7 +18,10 @@ routes.post('/students/:student_id/checkins', CheckinController.store);
 routes.use(authMiddleware);
 routes.post('/students', StudentController.store);
 routes.put('/students/:id', StudentController.update);
-
+/**
+ Options
+ * 
+ */
 routes.post('/options', OptionController.store);
 routes.get('/options', OptionController.index);
 routes.put('/options/:id', OptionController.update);
@@ -28,7 +31,7 @@ routes.delete('/options/:id', OptionController.delete);
  Membership
  * 
  */
-routes.get('/students/:student_id/membership', MembershipController.index);
+routes.get('/memberships', MembershipController.index);
 routes.post(
   '/students/:student_id/options/:option_id/membership',
   MembershipController.store
@@ -37,6 +40,6 @@ routes.put(
   '/students/:student_id/options/:option_id/membership',
   MembershipController.update
 );
-routes.delete('/students/:student_id/membership', MembershipController.delete);
+routes.delete('/memberships/:membership_id', MembershipController.delete);
 
 export default routes;

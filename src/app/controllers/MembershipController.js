@@ -6,13 +6,41 @@ import * as Yup from 'yup';
 import { parseISO, startOfDay, addMonths } from 'date-fns';
 import Membership from '../models/Membership';
 import Option from '../models/Option';
+import Student from '../models/Student';
 
 class MembershipController {
   /*
   Lista todos os alunos associados
   * */
   async index(req, res) {
-    return res.json({ message: 'Membership Index' });
+    const { student_id, option_id } = req.body;
+    const filter = {};
+
+    if (student_id) {
+      filter.student_id = student_id;
+    }
+    if (option_id) {
+      filter.option_id = option_id;
+    }
+
+    const memberships = await Membership.findAll({
+      attributes: ['start_date', 'end_date', 'price'],
+      where: filter,
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['nome', 'email'],
+        },
+        {
+          model: Option,
+          as: 'option',
+          attributes: ['title', 'duration', 'price'],
+        },
+      ],
+    });
+
+    return res.json({ memberships });
   }
 
   /*
@@ -90,7 +118,7 @@ class MembershipController {
     const option_id = parseInt(req.params.option_id, 10);
     const new_start_date = startOfDay(parseISO(req.body.start_date));
 
-    let membership = await Membership.findOne({
+    const membership = await Membership.findOne({
       where: { student_id, option_id },
     });
 
@@ -101,36 +129,43 @@ class MembershipController {
     }
 
     if (membership.start_date === new_start_date) {
-      return res
-        .status(401)
-        .json({ message: 'New date to start is equal actual date' });
+      return res.status(401).json({
+        message: 'Nothing to update, new start date is equal actual start date',
+      });
     }
 
     const option = await Option.findByPk(option_id);
 
     const new_end_date = addMonths(new_start_date, option.duration);
 
-    membership = await Membership.update(
-      {
-        start_date: new_start_date,
-        end_date: new_end_date,
-      },
-      { where: { student_id, option_id } }
-    )
-      .then(updated => {
-        return res.json({ updated });
-      })
-      .catch(error => {
-        console.log(error);
-        return res.json({ error });
-      });
+    membership.start_date = new_start_date;
+    membership.end_date = new_end_date;
+
+    membership.save();
+
+    return res.json({ membership });
   }
 
   /*
   Remove um plano informado
   * */
   async delete(req, res) {
-    return res.json({ message: 'Membership Delete' });
+    const membership = await Membership.findByPk(
+      parseInt(req.params.membership_id, 10)
+    );
+
+    if (membership) {
+      await Membership.destroy({ where: { id: membership.id } });
+
+      return res.json({
+        message: 'Membership successfully deleted',
+        membership,
+      });
+    }
+
+    return res
+      .status(401)
+      .json({ message: 'Could not delete membership. Not found.' });
   }
 }
 
