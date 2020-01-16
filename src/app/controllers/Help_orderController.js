@@ -5,6 +5,7 @@ import { parseISO, startOfDay, addMonths } from 'date-fns';
 import * as Yup from 'yup';
 import Help_order from '../models/Help_order';
 import Student from '../models/Student';
+import Mail from '../../lib/Mail';
 
 class Help_orderController {
   /*
@@ -122,6 +123,10 @@ class Help_orderController {
     return res.json({ help_order });
   }
 
+  /*
+  Academia responde ao pedido de auxílio.
+  Email com resposta é enviado ao aluno.
+  * */
   async answer(req, res) {
     const schema = Yup.object().shape({
       help_order_id: Yup.number()
@@ -139,7 +144,15 @@ class Help_orderController {
       return res.status(400).json({ error: 'Validation fails.' });
     }
 
-    const help_order = await Help_order.findByPk(data.help_order_id);
+    const help_order = await Help_order.findByPk(data.help_order_id, {
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['nome', 'email'],
+        },
+      ],
+    });
 
     if (!help_order) {
       return res.status(401).json({
@@ -151,6 +164,17 @@ class Help_orderController {
     help_order.answered_at = new Date();
     help_order.save();
 
+    await Mail.sendMail({
+      to: `${help_order.student.nome} <${help_order.student.email}>`,
+      subject: 'Resposta ao seu pedido de auxílio',
+      template: 'notify_answered',
+      context: {
+        student: help_order.student.nome,
+        question: help_order.question,
+        answer: help_order.answer,
+        answered_at: help_order.answered_at,
+      },
+    });
     return res.json({ help_order });
   }
 }
