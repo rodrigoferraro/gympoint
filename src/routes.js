@@ -67,8 +67,10 @@ routes.delete('/memberships/:membership_id', MembershipController.delete);
 /**
  * Help_order
  */
-routes.get('/help_orders', Help_orderController.unanswered);
-
+routes.get('/help_orders/unanswered', Help_orderController.unanswered);
 routes.get('/students/:student_id/help_orders', Help_orderController.index);
+/* routes.delete('/students/:student_id/help_orders/:help_order_id', Help_orderController.delete);
+ */
+routes.put('/help-orders/:help_order_id/answer', Help_orderController.answer);
 
 export default routes;

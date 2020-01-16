@@ -5,9 +5,14 @@ class Help_order extends Model {
     super.init(
       {
         student_id: Sequelize.INTEGER, // referência ao aluno
-        question: Sequelize.TEXT, // referência ao plano que escolheu
-        answer: Sequelize.TEXT, // data de início da matrícula
-        answered_at: Sequelize.DATEONLY, // data de término da matrícula
+        question: Sequelize.TEXT, // pedido de auxílio
+        answer: Sequelize.TEXT, // resposta ao pedido
+        answered_at: Sequelize.DATEONLY, // data da resposta
+        canceled_at:
+          Sequelize.DATE /** data de exclusão, caso tenha sido respondida 
+                 (fica um histórico para a academia, mas o aluno não vê mais). 
+          Caso não tenha sido respondida, ocorre a real exclusão do registro
+        */,
       },
       {
         sequelize,

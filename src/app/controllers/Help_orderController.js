@@ -38,12 +38,15 @@ class Help_orderController {
    * Lista todos os pedidos de auxílio do aluno informado
    */
   async index(req, res) {
+    const { page = 1, recs = 20 } = req.query;
     const student_id = parseInt(req.params.student_id, 10);
 
     const student_help_orders = await Help_order.findAll({
       attributes: ['question', 'answer', 'answered_at'],
-      where: { id: student_id },
+      where: { id: student_id, canceled_at: null },
       order: [['created_at', 'DESC']],
+      limit: recs,
+      offset: page > 0 ? (page - 1) * recs : 0,
     });
 
     res.json({ student_help_orders });
@@ -114,6 +117,38 @@ class Help_orderController {
     }
 
     help_order.question = data.question;
+    help_order.save();
+
+    return res.json({ help_order });
+  }
+
+  async answer(req, res) {
+    const schema = Yup.object().shape({
+      help_order_id: Yup.number()
+        .integer()
+        .required(),
+      answer: Yup.string().required(),
+    });
+
+    const data = {
+      help_order_id: parseInt(req.params.help_order_id, 10),
+      answer: req.body.answer,
+    };
+
+    if (!(await schema.isValid(data))) {
+      return res.status(400).json({ error: 'Validation fails.' });
+    }
+
+    const help_order = await Help_order.findByPk(data.help_order_id);
+
+    if (!help_order) {
+      return res.status(401).json({
+        error: `Help order not found`,
+      });
+    }
+
+    help_order.answer = data.answer;
+    help_order.answered_at = new Date();
     help_order.save();
 
     return res.json({ help_order });
