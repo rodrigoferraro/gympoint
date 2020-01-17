@@ -3,9 +3,11 @@ import { Op } from 'sequelize';
 import { parseISO, startOfDay, addMonths } from 'date-fns';
 */
 import * as Yup from 'yup';
+import Queue from '../../lib/Queue';
+
 import Help_order from '../models/Help_order';
 import Student from '../models/Student';
-import Mail from '../../lib/Mail';
+import NotifyAnswer from '../jobs/NotifyAnswer';
 
 class Help_orderController {
   /*
@@ -164,18 +166,14 @@ class Help_orderController {
     help_order.answered_at = new Date();
     help_order.save();
 
-    await Mail.sendMail({
-      to: `${help_order.student.nome} <${help_order.student.email}>`,
-      subject: 'Resposta ao seu pedido de auxílio',
-      template: 'notify_answered',
-      context: {
-        student: help_order.student.nome,
-        question: help_order.question,
-        answer: help_order.answer,
-        answered_at: help_order.answered_at,
-      },
+    await Queue.add(NotifyAnswer.key, {
+      help_order,
     });
-    return res.json({ help_order });
+
+    return res.json({
+      message: 'An email with the answer had been sent to the student',
+      help_order,
+    });
   }
 }
 

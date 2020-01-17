@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       answered_at: {
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
       },
       created_at: {
         type: Sequelize.DATE,

@@ -7,7 +7,7 @@ class Help_order extends Model {
         student_id: Sequelize.INTEGER, // referência ao aluno
         question: Sequelize.TEXT, // pedido de auxílio
         answer: Sequelize.TEXT, // resposta ao pedido
-        answered_at: Sequelize.DATEONLY, // data da resposta
+        answered_at: Sequelize.DATE, // data da resposta
         canceled_at:
           Sequelize.DATE /** data de exclusão, caso tenha sido respondida 
                  (fica um histórico para a academia, mas o aluno não vê mais). 
