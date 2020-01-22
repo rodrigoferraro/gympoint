@@ -1,7 +1,7 @@
 /*
 import Student from '../models/Student';
-import { Op } from 'sequelize';
 */
+import { Op } from 'sequelize';
 import * as Yup from 'yup';
 import { parseISO, startOfDay, addMonths } from 'date-fns';
 import Membership from '../models/Membership';
@@ -28,9 +28,9 @@ class MembershipController {
     const memberships = await Membership.findAll({
       attributes: ['start_date', 'end_date', 'price'],
       where: filter,
-      order: ['nome'],
       limit: recs,
       offset: page > 0 ? (page - 1) * recs : 0,
+      order: [['student', 'nome', 'ASC']],
       include: [
         {
           model: Student,
@@ -78,9 +78,44 @@ class MembershipController {
     const new_start_date = startOfDay(parseISO(req.body.start_date));
     const new_end_date = addMonths(new_start_date, option.duration);
 
-    const price = parseFloat(option.price * option.duration).toFixed(2);
+    let membership = await Membership.findOne({
+      where: {
+        student_id,
+        [Op.or]: [
+          {
+            start_date: {
+              [Op.lte]: new_start_date,
+            },
+            end_date: {
+              [Op.gte]: new_start_date,
+            },
+          },
+          {
+            start_date: {
+              [Op.lte]: new_end_date,
+            },
+            end_date: {
+              [Op.gte]: new_end_date,
+            },
+          },
+        ],
+      },
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['nome'],
+        },
+      ],
+    });
 
-    let membership = null;
+    if (membership) {
+      return res.status(418).json({
+        error: `Já existe um plano válido para ${membership.student.nome} entre ${membership.start_date_fmtd} e ${membership.end_date_fmtd}.`,
+      });
+    }
+
+    const price = parseFloat(option.price * option.duration).toFixed(2);
 
     try {
       membership = await Membership.create({

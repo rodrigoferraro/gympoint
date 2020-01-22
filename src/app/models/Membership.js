@@ -1,4 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
+import { format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 
 class Membership extends Model {
   static init(sequelize) {
@@ -9,11 +11,28 @@ class Membership extends Model {
         start_date: Sequelize.DATE, // data de início da matrícula
         end_date: Sequelize.DATE, // data de término da matrícula
         price: Sequelize.DECIMAL(6, 2), // preço total calculado no momento da matrícula
+        start_date_fmtd: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return format(this.start_date, "dd'/'MM'/'yyyy", {
+              locale: pt,
+            });
+          },
+        },
+        end_date_fmtd: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return format(this.end_date, "dd'/'MM'/'yyyy", {
+              locale: pt,
+            });
+          },
+        },
       },
       {
         sequelize,
       }
     );
+
     return this;
   }
 
